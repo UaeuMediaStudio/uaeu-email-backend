@@ -31,12 +31,12 @@ const PORT = process.env.PORT || 3000;
 
 // Gmail SMTP Configuration
 const GMAIL_USER = process.env.GMAIL_USER || 'uaeumediastudio@gmail.com';
-const GMAIL_APP_PASSWORD = process.env.GMAIL_APP_PASSWORD || 'doattuuvankrahzl';
+const GMAIL_APP_PASSWORD = process.env.GMAIL_APP_PASSWORD;
 const ADMIN_EMAIL = 'uaeumediastudio@gmail.com';
 
 // UAEU Branding
 const UAEU_RED = '#C8102E';
-const LOGO_URL = 'https://www.uaeu.ac.ae/en/dvcc/public_relations/_images/uaeu_logo.png';
+const LOGO_URL = 'https://page.gensparksite.com/v1/base64_upload/59c99dc301c4faf881be43f4660c0f0c';
 
 // Create Gmail Transporter
 const transporter = nodemailer.createTransport({
