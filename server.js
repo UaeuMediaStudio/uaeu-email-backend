@@ -1,20 +1,6 @@
-/**
- * ========================================
- * UAEU MEDIA STUDIO EMAIL SERVICE
- * Professional Node.js Backend with Gmail SMTP
- * ========================================
- * 
- * Features:
- * ✅ 10 Professional UAEU-branded Email Templates
- * ✅ Gmail SMTP Integration (uaeumediastudio@gmail.com)
- * ✅ RESTful API Endpoints
- * ✅ CORS Enabled for Frontend Integration
- * ✅ Auto Admin Notifications
- * ✅ Production-Ready
- * 
- * Author: UAEU Media Studio
- * Version: 1.0.0
- */
+// UAEU Media Studio - Node.js Backend Email Service
+// Professional Gmail SMTP Email Server
+// Run with: node server.js
 
 const express = require('express');
 const nodemailer = require('nodemailer');
@@ -22,21 +8,19 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 require('dotenv').config();
 
+// Initialize Express App
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// ============================================
-// GMAIL SMTP CONFIGURATION
-// ============================================
+// Middleware
+app.use(cors()); // Allow cross-origin requests
+app.use(bodyParser.json()); // Parse JSON request bodies
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // Gmail SMTP Configuration
 const GMAIL_USER = process.env.GMAIL_USER || 'uaeumediastudio@gmail.com';
-const GMAIL_APP_PASSWORD = process.env.GMAIL_APP_PASSWORD;
+const GMAIL_APP_PASSWORD = process.env.GMAIL_APP_PASSWORD || 'doattuuvankrahzl';
 const ADMIN_EMAIL = 'uaeumediastudio@gmail.com';
-
-// UAEU Branding
-const UAEU_RED = '#C8102E';
-const LOGO_URL = 'https://page.gensparksite.com/v1/base64_upload/59c99dc301c4faf881be43f4660c0f0c';
 
 // Create Gmail Transporter
 const transporter = nodemailer.createTransport({
@@ -57,10 +41,11 @@ transporter.verify((error, success) => {
     }
 });
 
-// ============================================
-// EMAIL TEMPLATE GENERATOR
-// ============================================
+// UAEU Branding Constants
+const UAEU_RED = '#C8102E';
+const LOGO_URL = 'https://www.uaeu.ac.ae/en/dvca/ctl/images/uaeu-logo.png';
 
+// HTML Email Template Generator
 function generateEmailTemplate(content, title, icon = '📧') {
     return `
 <!DOCTYPE html>
@@ -68,69 +53,60 @@ function generateEmailTemplate(content, title, icon = '📧') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light only">
     <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-            background-color: #f5f5f5;
+        body { 
+            margin: 0 !important; 
+            padding: 0 !important; 
+            font-family: Arial, sans-serif !important; 
+            background-color: #f5f5f5 !important; 
         }
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            background: white;
+        .container { 
+            max-width: 600px !important; 
+            margin: 0 auto !important; 
+            background: white !important; 
         }
-        .header {
-            background: linear-gradient(135deg, ${UAEU_RED} 0%, #A00D26 100%);
-            padding: 40px;
-            text-align: center;
+        .header { 
+            background: linear-gradient(135deg, ${UAEU_RED} 0%, #A00D26 100%) !important; 
+            padding: 40px !important; 
+            text-align: center !important; 
         }
-        .header h1 {
-            color: white;
-            margin: 0;
-            font-size: 28px;
+        .header h1 { 
+            color: white !important; 
+            margin: 0 !important; 
+            font-size: 28px !important; 
         }
-        .icon {
-            font-size: 48px;
-            margin-bottom: 10px;
+        .icon { 
+            font-size: 48px !important; 
+            margin-bottom: 10px !important; 
         }
-        .content {
-            padding: 40px;
-            color: #333;
-            line-height: 1.6;
+        .content { 
+            padding: 30px !important; 
+            background: white !important;
+        }
+        .content p {
+            color: #333333 !important;
+            line-height: 1.6 !important;
+            margin: 10px 0 !important;
+        }
+        .content strong {
+            color: #000000 !important;
         }
         .info-box {
-            background: #f8f9fa;
-            border-left: 4px solid ${UAEU_RED};
-            padding: 20px;
-            margin: 20px 0;
+            background: #fff5f7 !important;
+            border-left: 4px solid ${UAEU_RED} !important;
+            padding: 20px !important;
+            margin: 20px 0 !important;
         }
-        .info-box p {
-            margin: 8px 0;
+        .footer { 
+            background: #f8f9fa !important; 
+            padding: 20px !important; 
+            text-align: center !important; 
+            border-top: 3px solid ${UAEU_RED} !important; 
         }
-        .button {
-            display: inline-block;
-            padding: 12px 30px;
-            background: ${UAEU_RED};
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            margin: 20px 0;
-        }
-        .footer {
-            background: #f8f9fa;
-            padding: 30px;
-            text-align: center;
-            border-top: 3px solid ${UAEU_RED};
-        }
-        .footer img {
-            max-width: 150px;
-            margin-bottom: 10px;
-        }
-        .footer p {
-            color: #666;
-            font-size: 14px;
-            margin: 5px 0;
+        .footer img { 
+            height: 40px !important; 
+            margin-bottom: 10px !important; 
         }
     </style>
 </head>
@@ -145,516 +121,483 @@ function generateEmailTemplate(content, title, icon = '📧') {
         </div>
         <div class="footer">
             <img src="${LOGO_URL}" alt="UAEU Logo">
-            <p><strong>UAEU Media Studio</strong></p>
-            <p>United Arab Emirates University</p>
-            <p>📧 ${ADMIN_EMAIL}</p>
+            <p style="margin: 10px 0; font-weight: 600; color: #333;">UAEU Media Studio</p>
+            <p style="margin: 5px 0; color: #666;">College of Humanities and Social Sciences</p>
+            <p style="margin: 5px 0; color: #666;">United Arab Emirates University</p>
         </div>
     </div>
 </body>
 </html>
-`;
+    `;
 }
 
-// ============================================
-// MIDDLEWARE
-// ============================================
+// =====================================================
+// API ROUTES
+// =====================================================
 
-// CORS - Allow all origins (adjust for production)
-app.use(cors());
-
-// Body Parser
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-
-// Request Logger
-app.use((req, res, next) => {
-    console.log(`📨 ${req.method} ${req.path}`);
-    next();
-});
-
-// ============================================
-// HEALTH CHECK ENDPOINT
-// ============================================
-
-app.get('/api/health', (req, res) => {
+// Health Check
+app.get('/', (req, res) => {
     res.json({
-        status: 'healthy',
+        status: 'running',
         service: 'UAEU Media Studio Email Service',
         version: '1.0.0',
-        timestamp: new Date().toISOString(),
-        smtp: {
-            provider: 'Gmail',
-            sender: GMAIL_USER,
-            status: 'connected'
-        }
+        emailProvider: 'Gmail SMTP',
+        sender: GMAIL_USER
     });
 });
 
-// ============================================
-// ROOT ENDPOINT
-// ============================================
-
-app.get('/', (req, res) => {
-    res.send(`
-        <html>
-        <head>
-            <title>UAEU Email Service</title>
-            <style>
-                body { font-family: Arial, sans-serif; max-width: 800px; margin: 50px auto; padding: 20px; }
-                h1 { color: ${UAEU_RED}; }
-                .endpoint { background: #f5f5f5; padding: 10px; margin: 10px 0; border-left: 4px solid ${UAEU_RED}; }
-            </style>
-        </head>
-        <body>
-            <h1>🎉 UAEU Media Studio Email Service</h1>
-            <p><strong>Status:</strong> ✅ Running</p>
-            <p><strong>Version:</strong> 1.0.0</p>
-            <p><strong>SMTP Provider:</strong> Gmail</p>
-            
-            <h2>📋 Available Endpoints:</h2>
-            <div class="endpoint"><strong>POST</strong> /api/email/reservation-confirmation</div>
-            <div class="endpoint"><strong>POST</strong> /api/email/reservation-approved</div>
-            <div class="endpoint"><strong>POST</strong> /api/email/reservation-rejected</div>
-            <div class="endpoint"><strong>POST</strong> /api/email/borrow-confirmation</div>
-            <div class="endpoint"><strong>POST</strong> /api/email/borrow-approved</div>
-            <div class="endpoint"><strong>POST</strong> /api/email/borrow-rejected</div>
-            <div class="endpoint"><strong>POST</strong> /api/email/admin-notification</div>
-            <div class="endpoint"><strong>GET</strong> /api/health</div>
-            
-            <p><em>🔐 This is a backend service. Please use the official UAEU Media Studio frontend.</em></p>
-        </body>
-        </html>
-    `);
+// Health Check Endpoint
+app.get('/api/health', (req, res) => {
+    res.json({
+        status: 'healthy',
+        timestamp: new Date().toISOString(),
+        gmailConnected: true
+    });
 });
 
-// ============================================
-// EMAIL API ENDPOINTS
-// ============================================
+// =====================================================
+// SEND EMAIL ENDPOINT (Generic)
+// =====================================================
+app.post('/api/send-email', async (req, res) => {
+    try {
+        const { to, subject, html } = req.body;
 
-// 1. RESERVATION CONFIRMATION (Student)
+        // Validate required fields
+        if (!to || !subject || !html) {
+            return res.status(400).json({
+                success: false,
+                error: 'Missing required fields: to, subject, html'
+            });
+        }
+
+        // Send email
+        const info = await transporter.sendMail({
+            from: `UAEU Media Studio <${GMAIL_USER}>`,
+            to: to,
+            subject: subject,
+            html: html
+        });
+
+        console.log(`✅ Email sent to ${to}: ${subject}`);
+
+        res.json({
+            success: true,
+            messageId: info.messageId,
+            to: to,
+            subject: subject,
+            timestamp: new Date().toISOString()
+        });
+
+    } catch (error) {
+        console.error('❌ Email error:', error);
+        res.status(500).json({
+            success: false,
+            error: error.message,
+            timestamp: new Date().toISOString()
+        });
+    }
+});
+
+// =====================================================
+// TEMPLATE 1: Reservation Confirmation
+// =====================================================
 app.post('/api/email/reservation-confirmation', async (req, res) => {
     try {
         const data = req.body;
-        
+
         const content = `
             <p><strong>Dear ${data.studentName},</strong></p>
             <p>Your studio reservation request has been received and is pending approval.</p>
-            
             <div class="info-box">
-                <p><strong>📝 Reservation Details:</strong></p>
                 <p><strong>Student ID:</strong> ${data.studentID}</p>
-                <p><strong>Email:</strong> ${data.email}</p>
                 <p><strong>Date:</strong> ${data.date}</p>
                 <p><strong>Time:</strong> ${data.fromTime} - ${data.toTime}</p>
-                <p><strong>Purpose:</strong> ${data.purpose}</p>
+                <p><strong>Studio:</strong> ${data.studioType || 'Media Studio'}</p>
+                <p><strong>Project:</strong> ${data.projectName || 'N/A'}</p>
                 <p><strong>Status:</strong> <span style="color: #f59e0b;">⏳ Pending Approval</span></p>
             </div>
-            
-            <p>You will receive another email once the admin reviews your request.</p>
-            <p>If you have any questions, please contact us at <strong>${ADMIN_EMAIL}</strong></p>
-            
-            <p>Best regards,<br><strong>UAEU Media Studio Team</strong></p>
+            <p>You will receive an email notification once your request is reviewed.</p>
+            <p style="margin-top: 20px;">Best regards,<br><strong>UAEU Media Studio Team</strong></p>
         `;
-        
+
         const html = generateEmailTemplate(content, 'Reservation Confirmation', '📧');
-        
+
         const info = await transporter.sendMail({
             from: `UAEU Media Studio <${GMAIL_USER}>`,
             to: data.email,
             subject: 'Studio Reservation Confirmation - UAEU',
             html: html
         });
-        
+
         console.log(`✅ Reservation confirmation sent to ${data.email}`);
-        
+
         res.json({
             success: true,
             messageId: info.messageId,
             to: data.email,
             timestamp: new Date().toISOString()
         });
-        
+
     } catch (error) {
-        console.error('❌ Error sending reservation confirmation:', error);
-        res.status(500).json({
-            success: false,
-            error: error.message
-        });
+        console.error('❌ Error:', error);
+        res.status(500).json({ success: false, error: error.message });
     }
 });
 
-// 2. RESERVATION APPROVED (Student)
+// =====================================================
+// TEMPLATE 2: Reservation Approved
+// =====================================================
 app.post('/api/email/reservation-approved', async (req, res) => {
     try {
         const data = req.body;
-        
+
         const content = `
             <p><strong>Dear ${data.studentName},</strong></p>
-            <p>🎉 <strong>Great news!</strong> Your studio reservation has been <strong style="color: #10b981;">APPROVED</strong>!</p>
-            
-            <div class="info-box">
-                <p><strong>✅ Approved Reservation:</strong></p>
-                <p><strong>Student ID:</strong> ${data.studentID}</p>
-                <p><strong>Date:</strong> ${data.date}</p>
-                <p><strong>Time:</strong> ${data.fromTime} - ${data.toTime}</p>
-                <p><strong>Purpose:</strong> ${data.purpose}</p>
-                <p><strong>Status:</strong> <span style="color: #10b981;">✅ Approved</span></p>
+            <p>Great news! Your studio reservation has been approved!</p>
+            <div style="background: #d4edda; border-left: 4px solid #28a745; padding: 20px; margin: 20px 0;">
+                <p style="color: #333;"><strong>Student ID:</strong> ${data.studentID}</p>
+                <p style="color: #333;"><strong>Date:</strong> ${data.date}</p>
+                <p style="color: #333;"><strong>Time:</strong> ${data.fromTime} - ${data.toTime}</p>
+                <p style="color: #333;"><strong>Studio:</strong> ${data.studioType || 'Media Studio'}</p>
+                <p style="color: #333;"><strong>Status:</strong> <span style="color: #28a745; font-weight: 600;">✅ APPROVED</span></p>
             </div>
-            
-            <p><strong>📍 Important Reminders:</strong></p>
-            <ul>
-                <li>Please arrive on time</li>
-                <li>Bring your student ID card</li>
-                <li>Follow studio guidelines</li>
-                <li>Contact us if you need to cancel</li>
-            </ul>
-            
-            <p>We look forward to seeing you!</p>
-            <p>Best regards,<br><strong>UAEU Media Studio Team</strong></p>
+            <p>Please arrive on time. Contact us if you need to make any changes.</p>
+            <p style="margin-top: 20px;">Best regards,<br><strong>UAEU Media Studio Team</strong></p>
         `;
-        
-        const html = generateEmailTemplate(content, 'Reservation Approved ✅', '🎉');
-        
+
+        const html = generateEmailTemplate(content, 'Reservation Approved', '🎉');
+
         const info = await transporter.sendMail({
             from: `UAEU Media Studio <${GMAIL_USER}>`,
             to: data.email,
-            subject: '✅ Reservation Approved - UAEU Media Studio',
+            subject: '🎉 Reservation Approved - UAEU Media Studio',
             html: html
         });
-        
+
         console.log(`✅ Approval notification sent to ${data.email}`);
-        
+
         res.json({
             success: true,
             messageId: info.messageId,
             to: data.email,
             timestamp: new Date().toISOString()
         });
-        
+
     } catch (error) {
-        console.error('❌ Error sending approval notification:', error);
-        res.status(500).json({
-            success: false,
-            error: error.message
-        });
+        console.error('❌ Error:', error);
+        res.status(500).json({ success: false, error: error.message });
     }
 });
 
-// 3. RESERVATION REJECTED (Student)
+// =====================================================
+// TEMPLATE 3: Reservation Rejected
+// =====================================================
 app.post('/api/email/reservation-rejected', async (req, res) => {
     try {
         const data = req.body;
-        
+
         const content = `
             <p><strong>Dear ${data.studentName},</strong></p>
-            <p>Thank you for your interest in using the UAEU Media Studio.</p>
-            <p>Unfortunately, we cannot approve your reservation request at this time.</p>
-            
-            <div class="info-box">
-                <p><strong>❌ Reservation Details:</strong></p>
-                <p><strong>Student ID:</strong> ${data.studentID}</p>
-                <p><strong>Date:</strong> ${data.date}</p>
-                <p><strong>Time:</strong> ${data.fromTime} - ${data.toTime}</p>
-                <p><strong>Status:</strong> <span style="color: #ef4444;">❌ Not Approved</span></p>
-                ${data.reason ? `<p><strong>Reason:</strong> ${data.reason}</p>` : ''}
+            <p>Unfortunately, we cannot approve your studio reservation at this time.</p>
+            <div style="background: #f8d7da; border-left: 4px solid #dc3545; padding: 20px; margin: 20px 0;">
+                <p style="color: #333;"><strong>Student ID:</strong> ${data.studentID}</p>
+                <p style="color: #333;"><strong>Date:</strong> ${data.date}</p>
+                <p style="color: #333;"><strong>Time:</strong> ${data.fromTime} - ${data.toTime}</p>
+                ${data.rejectionReason ? `<p style="color: #333;"><strong>Reason:</strong> ${data.rejectionReason}</p>` : ''}
+                <p style="color: #333;"><strong>Status:</strong> <span style="color: #dc3545; font-weight: 600;">❌ NOT APPROVED</span></p>
             </div>
-            
-            <p><strong>📋 Next Steps:</strong></p>
-            <ul>
-                <li>You can submit a new request for a different time slot</li>
-                <li>Contact us for more information about availability</li>
-                <li>Check our guidelines for reservation requirements</li>
-            </ul>
-            
-            <p>If you have any questions, please contact us at <strong>${ADMIN_EMAIL}</strong></p>
-            <p>Best regards,<br><strong>UAEU Media Studio Team</strong></p>
+            <p>You can submit a new reservation request at any time. Please contact us if you have questions.</p>
+            <p style="margin-top: 20px;">Best regards,<br><strong>UAEU Media Studio Team</strong></p>
         `;
-        
-        const html = generateEmailTemplate(content, 'Reservation Update', '📋');
-        
+
+        const html = generateEmailTemplate(content, 'Reservation Status Update', '❌');
+
         const info = await transporter.sendMail({
             from: `UAEU Media Studio <${GMAIL_USER}>`,
             to: data.email,
             subject: 'Reservation Status Update - UAEU Media Studio',
             html: html
         });
-        
+
         console.log(`✅ Rejection notification sent to ${data.email}`);
-        
+
         res.json({
             success: true,
             messageId: info.messageId,
             to: data.email,
             timestamp: new Date().toISOString()
         });
-        
+
     } catch (error) {
-        console.error('❌ Error sending rejection notification:', error);
-        res.status(500).json({
-            success: false,
-            error: error.message
-        });
+        console.error('❌ Error:', error);
+        res.status(500).json({ success: false, error: error.message });
     }
 });
 
-// 4. BORROW CONFIRMATION (Student)
-app.post('/api/email/borrow-confirmation', async (req, res) => {
+// =====================================================
+// TEMPLATE 4: Equipment Borrow Confirmation
+// =====================================================
+app.post('/api/email/equipment-confirmation', async (req, res) => {
     try {
         const data = req.body;
-        
+
         const content = `
             <p><strong>Dear ${data.studentName},</strong></p>
-            <p>Your equipment borrow request has been received and is pending approval.</p>
-            
+            <p>Your equipment borrowing request has been received and is pending approval.</p>
             <div class="info-box">
-                <p><strong>📦 Borrow Request Details:</strong></p>
                 <p><strong>Student ID:</strong> ${data.studentID}</p>
-                <p><strong>Email:</strong> ${data.email}</p>
-                <p><strong>Equipment:</strong> ${data.equipment}</p>
+                <p><strong>Equipment:</strong> ${data.equipmentName}</p>
                 <p><strong>Borrow Date:</strong> ${data.borrowDate}</p>
                 <p><strong>Return Date:</strong> ${data.returnDate}</p>
-                <p><strong>Purpose:</strong> ${data.purpose}</p>
                 <p><strong>Status:</strong> <span style="color: #f59e0b;">⏳ Pending Approval</span></p>
             </div>
-            
-            <p>You will receive another email once the admin reviews your request.</p>
-            <p>If you have any questions, please contact us at <strong>${ADMIN_EMAIL}</strong></p>
-            
-            <p>Best regards,<br><strong>UAEU Media Studio Team</strong></p>
+            <p>You will receive an email notification once your request is reviewed.</p>
+            <p style="margin-top: 20px;">Best regards,<br><strong>UAEU Media Studio Team</strong></p>
         `;
-        
-        const html = generateEmailTemplate(content, 'Borrow Request Confirmation', '📦');
-        
+
+        const html = generateEmailTemplate(content, 'Equipment Borrow Request', '📦');
+
         const info = await transporter.sendMail({
             from: `UAEU Media Studio <${GMAIL_USER}>`,
             to: data.email,
-            subject: 'Equipment Borrow Confirmation - UAEU',
+            subject: 'Equipment Borrow Request - UAEU Media Studio',
             html: html
         });
-        
-        console.log(`✅ Borrow confirmation sent to ${data.email}`);
-        
+
+        console.log(`✅ Equipment confirmation sent to ${data.email}`);
+
         res.json({
             success: true,
             messageId: info.messageId,
             to: data.email,
             timestamp: new Date().toISOString()
         });
-        
+
     } catch (error) {
-        console.error('❌ Error sending borrow confirmation:', error);
-        res.status(500).json({
-            success: false,
-            error: error.message
-        });
+        console.error('❌ Error:', error);
+        res.status(500).json({ success: false, error: error.message });
     }
 });
 
-// 5. BORROW APPROVED (Student)
-app.post('/api/email/borrow-approved', async (req, res) => {
+// =====================================================
+// TEMPLATE 5: Equipment Return Reminder
+// =====================================================
+app.post('/api/email/equipment-reminder', async (req, res) => {
     try {
         const data = req.body;
         
+        // Support both studentID and studentId
+        const studentId = data.studentId || data.studentID;
+        
+        // Build equipment list from all equipment fields
+        let equipmentList = [];
+        if (data.camera && data.camera !== 'None') equipmentList.push(`Camera: ${data.camera}`);
+        if (data.memoryCard && data.memoryCard !== 'None') equipmentList.push(`Memory Card: ${data.memoryCard}`);
+        if (data.tripod && data.tripod !== 'None') equipmentList.push(`Tripod: ${data.tripod}`);
+        if (data.lights && data.lights !== 'None') equipmentList.push(`Lights: ${data.lights}`);
+        if (data.microphone && data.microphone !== 'None') equipmentList.push(`Microphone: ${data.microphone}`);
+        if (data.otherEquipment && data.otherEquipment !== 'None') equipmentList.push(`Other: ${data.otherEquipment}`);
+        
+        const equipmentHtml = equipmentList.length > 0 
+            ? equipmentList.map(item => `<p style="color: #333; margin: 5px 0;">• ${item}</p>`).join('')
+            : `<p style="color: #333;"><strong>Equipment:</strong> ${data.equipmentName || 'Various items'}</p>`;
+
         const content = `
             <p><strong>Dear ${data.studentName},</strong></p>
-            <p>🎉 <strong>Great news!</strong> Your equipment borrow request has been <strong style="color: #10b981;">APPROVED</strong>!</p>
-            
-            <div class="info-box">
-                <p><strong>✅ Approved Borrow Request:</strong></p>
-                <p><strong>Student ID:</strong> ${data.studentID}</p>
-                <p><strong>Equipment:</strong> ${data.equipment}</p>
-                <p><strong>Borrow Date:</strong> ${data.borrowDate}</p>
-                <p><strong>Return Date:</strong> ${data.returnDate}</p>
-                <p><strong>Purpose:</strong> ${data.purpose}</p>
-                <p><strong>Status:</strong> <span style="color: #10b981;">✅ Approved</span></p>
+            <p>This is a friendly reminder that your borrowed equipment is due for return soon.</p>
+            <div style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 20px; margin: 20px 0;">
+                <p style="color: #333;"><strong>Student ID:</strong> ${studentId}</p>
+                <p style="color: #333; margin-bottom: 10px;"><strong>Borrowed Equipment:</strong></p>
+                ${equipmentHtml}
+                <p style="color: #333; margin-top: 10px;"><strong>Borrow Date:</strong> ${data.borrowDate}</p>
+                <p style="color: #333;"><strong>Return Date:</strong> ${data.returnDate}</p>
+                <p style="color: #856404; margin-top: 15px;">⚠️ <strong>Please return the equipment on time to avoid late fees.</strong></p>
             </div>
-            
-            <p><strong>📍 Important Instructions:</strong></p>
-            <ul>
-                <li>Come to the studio to pick up the equipment</li>
-                <li>Bring your student ID card</li>
-                <li>Return the equipment by the specified date</li>
-                <li>Handle equipment with care</li>
-                <li>Report any issues immediately</li>
-            </ul>
-            
-            <p>Thank you for using UAEU Media Studio!</p>
-            <p>Best regards,<br><strong>UAEU Media Studio Team</strong></p>
+            <p>If you need an extension, please contact us before the due date.</p>
+            <p style="margin-top: 20px;">Best regards,<br><strong>UAEU Media Studio Team</strong></p>
         `;
-        
-        const html = generateEmailTemplate(content, 'Borrow Request Approved ✅', '🎉');
-        
+
+        const html = generateEmailTemplate(content, 'Equipment Return Reminder', '⏰');
+
         const info = await transporter.sendMail({
             from: `UAEU Media Studio <${GMAIL_USER}>`,
             to: data.email,
-            subject: '✅ Equipment Borrow Approved - UAEU',
+            subject: '⏰ Equipment Return Reminder - UAEU Media Studio',
             html: html
         });
-        
-        console.log(`✅ Borrow approval sent to ${data.email}`);
-        
+
+        console.log(`✅ Reminder sent to ${data.email}`);
+
         res.json({
             success: true,
             messageId: info.messageId,
             to: data.email,
             timestamp: new Date().toISOString()
         });
-        
+
     } catch (error) {
-        console.error('❌ Error sending borrow approval:', error);
-        res.status(500).json({
-            success: false,
-            error: error.message
-        });
+        console.error('❌ Error:', error);
+        res.status(500).json({ success: false, error: error.message });
     }
 });
 
-// 6. BORROW REJECTED (Student)
-app.post('/api/email/borrow-rejected', async (req, res) => {
+// =====================================================
+// TEMPLATE 6: Equipment Overdue Notice
+// =====================================================
+app.post('/api/email/equipment-overdue', async (req, res) => {
     try {
         const data = req.body;
-        
+
         const content = `
             <p><strong>Dear ${data.studentName},</strong></p>
-            <p>Thank you for your interest in borrowing equipment from UAEU Media Studio.</p>
-            <p>Unfortunately, we cannot approve your borrow request at this time.</p>
-            
-            <div class="info-box">
-                <p><strong>❌ Borrow Request Details:</strong></p>
-                <p><strong>Student ID:</strong> ${data.studentID}</p>
-                <p><strong>Equipment:</strong> ${data.equipment}</p>
-                <p><strong>Borrow Date:</strong> ${data.borrowDate}</p>
-                <p><strong>Return Date:</strong> ${data.returnDate}</p>
-                <p><strong>Status:</strong> <span style="color: #ef4444;">❌ Not Approved</span></p>
-                ${data.reason ? `<p><strong>Reason:</strong> ${data.reason}</p>` : ''}
+            <p>Your borrowed equipment is now overdue. Please return it immediately.</p>
+            <div style="background: #f8d7da; border-left: 4px solid #dc3545; padding: 20px; margin: 20px 0;">
+                <p style="color: #333;"><strong>Student ID:</strong> ${data.studentID}</p>
+                <p style="color: #333;"><strong>Equipment:</strong> ${data.equipmentName}</p>
+                <p style="color: #333;"><strong>Was Due:</strong> ${data.returnDate}</p>
+                <p style="color: #333;"><strong>Days Overdue:</strong> ${data.daysOverdue}</p>
+                <p style="color: #721c24;">🚨 <strong>OVERDUE - Late fees may apply!</strong></p>
             </div>
-            
-            <p><strong>📋 Next Steps:</strong></p>
-            <ul>
-                <li>Check equipment availability for other dates</li>
-                <li>Contact us for alternative equipment options</li>
-                <li>Review borrowing guidelines and requirements</li>
-            </ul>
-            
-            <p>If you have any questions, please contact us at <strong>${ADMIN_EMAIL}</strong></p>
-            <p>Best regards,<br><strong>UAEU Media Studio Team</strong></p>
+            <p>Please return the equipment as soon as possible to avoid additional charges.</p>
+            <p style="margin-top: 20px;">Best regards,<br><strong>UAEU Media Studio Team</strong></p>
         `;
-        
-        const html = generateEmailTemplate(content, 'Borrow Request Update', '📋');
-        
+
+        const html = generateEmailTemplate(content, 'OVERDUE: Equipment Return', '🚨');
+
         const info = await transporter.sendMail({
             from: `UAEU Media Studio <${GMAIL_USER}>`,
             to: data.email,
-            subject: 'Borrow Request Status Update - UAEU',
+            subject: '🚨 OVERDUE: Equipment Return Required - UAEU Media Studio',
             html: html
         });
-        
-        console.log(`✅ Borrow rejection sent to ${data.email}`);
-        
+
+        console.log(`✅ Overdue notice sent to ${data.email}`);
+
         res.json({
             success: true,
             messageId: info.messageId,
             to: data.email,
             timestamp: new Date().toISOString()
         });
-        
+
     } catch (error) {
-        console.error('❌ Error sending borrow rejection:', error);
-        res.status(500).json({
-            success: false,
-            error: error.message
-        });
+        console.error('❌ Error:', error);
+        res.status(500).json({ success: false, error: error.message });
     }
 });
 
-// 7. ADMIN NOTIFICATION (For all requests)
+// =====================================================
+// TEMPLATE 7: Reservation Reminder
+// =====================================================
+app.post('/api/email/reservation-reminder', async (req, res) => {
+    try {
+        const data = req.body;
+
+        const content = `
+            <p><strong>Dear ${data.studentName},</strong></p>
+            <p>This is a friendly reminder about your upcoming studio reservation.</p>
+            <div style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 20px; margin: 20px 0;">
+                <p style="color: #333;"><strong>Student ID:</strong> ${data.studentId}</p>
+                <p style="color: #333;"><strong>Studio:</strong> ${data.studioName || 'Media Studio'}</p>
+                <p style="color: #333;"><strong>Date:</strong> ${data.date}</p>
+                <p style="color: #333;"><strong>Time Slot:</strong> ${data.timeSlot}</p>
+                ${data.notes ? `<p style="color: #333;"><strong>Notes:</strong> ${data.notes}</p>` : ''}
+                <p style="color: #856404;">⚠️ <strong>Please arrive on time and bring your student ID.</strong></p>
+            </div>
+            <p>If you need to cancel or reschedule, please contact us as soon as possible.</p>
+            <p style="margin-top: 20px;">Best regards,<br><strong>UAEU Media Studio Team</strong></p>
+        `;
+
+        const html = generateEmailTemplate(content, 'Studio Reservation Reminder', '⏰');
+
+        const info = await transporter.sendMail({
+            from: `UAEU Media Studio <${GMAIL_USER}>`,
+            to: data.email,
+            subject: '⏰ Reservation Reminder - UAEU Media Studio',
+            html: html
+        });
+
+        console.log(`✅ Reservation reminder sent to ${data.email}`);
+
+        res.json({
+            success: true,
+            messageId: info.messageId,
+            to: data.email,
+            timestamp: new Date().toISOString()
+        });
+
+    } catch (error) {
+        console.error('❌ Error:', error);
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+// =====================================================
+// TEMPLATE 8: Admin Notification
+// =====================================================
 app.post('/api/email/admin-notification', async (req, res) => {
     try {
         const data = req.body;
-        const type = data.type || 'Request'; // 'Reservation' or 'Borrow'
-        
+        const isEquipment = data.equipmentName ? true : false;
+        const type = isEquipment ? 'Equipment Borrowing' : 'Studio Reservation';
+
+        let detailsHtml = '';
+        if (isEquipment) {
+            detailsHtml = `
+                <p style="color: #333;"><strong>Equipment:</strong> ${data.equipmentName}</p>
+                <p style="color: #333;"><strong>Borrow Date:</strong> ${data.borrowDate}</p>
+                <p style="color: #333;"><strong>Return Date:</strong> ${data.returnDate}</p>
+            `;
+        } else {
+            detailsHtml = `
+                <p style="color: #333;"><strong>Date:</strong> ${data.date}</p>
+                <p style="color: #333;"><strong>Time:</strong> ${data.fromTime} - ${data.toTime}</p>
+                <p style="color: #333;"><strong>Studio:</strong> ${data.studioType || 'Media Studio'}</p>
+                <p style="color: #333;"><strong>Project:</strong> ${data.projectName || 'N/A'}</p>
+            `;
+        }
+
         const content = `
-            <p><strong>New ${type} Request Received!</strong></p>
-            <p>A student has submitted a new ${type.toLowerCase()} request that requires your review.</p>
-            
+            <p><strong>New ${type} Request Received</strong></p>
             <div class="info-box">
-                <p><strong>📋 Request Details:</strong></p>
-                <p><strong>Student Name:</strong> ${data.studentName}</p>
-                <p><strong>Student ID:</strong> ${data.studentID}</p>
-                <p><strong>Email:</strong> ${data.email}</p>
-                ${data.date ? `<p><strong>Date:</strong> ${data.date}</p>` : ''}
-                ${data.fromTime ? `<p><strong>Time:</strong> ${data.fromTime} - ${data.toTime}</p>` : ''}
-                ${data.equipment ? `<p><strong>Equipment:</strong> ${data.equipment}</p>` : ''}
-                ${data.borrowDate ? `<p><strong>Borrow Date:</strong> ${data.borrowDate}</p>` : ''}
-                ${data.returnDate ? `<p><strong>Return Date:</strong> ${data.returnDate}</p>` : ''}
-                <p><strong>Purpose:</strong> ${data.purpose}</p>
-                <p><strong>Submitted:</strong> ${new Date().toLocaleString()}</p>
+                <p style="color: #333;"><strong>Student:</strong> ${data.studentName}</p>
+                <p style="color: #333;"><strong>Student ID:</strong> ${data.studentID}</p>
+                <p style="color: #333;"><strong>Email:</strong> ${data.email}</p>
+                <p style="color: #333;"><strong>Phone:</strong> ${data.phone || 'N/A'}</p>
+                ${detailsHtml}
             </div>
-            
-            <p><strong>⚡ Action Required:</strong></p>
-            <ul>
-                <li>Log in to the admin dashboard</li>
-                <li>Review the request details</li>
-                <li>Approve or reject the request</li>
-                <li>Student will be notified automatically</li>
-            </ul>
-            
-            <p><em>This is an automated notification from the UAEU Media Studio system.</em></p>
+            <div style="background: #fffbeb; padding: 15px; border-left: 4px solid #f59e0b; margin: 20px 0;">
+                <p style="color: #333;">⚠️ <strong>Action Required:</strong> Please review and approve/reject this request in the admin dashboard.</p>
+            </div>
         `;
-        
+
         const html = generateEmailTemplate(content, `New ${type} Request`, '🔔');
-        
+
         const info = await transporter.sendMail({
-            from: `UAEU Media Studio System <${GMAIL_USER}>`,
+            from: `UAEU Media Studio <${GMAIL_USER}>`,
             to: ADMIN_EMAIL,
-            subject: `🔔 New ${type} Request - UAEU Media Studio`,
+            subject: `🔔 New ${type} Request - Action Required`,
             html: html
         });
-        
-        console.log(`✅ Admin notification sent for ${type} request`);
-        
+
+        console.log(`✅ Admin notification sent`);
+
         res.json({
             success: true,
             messageId: info.messageId,
             to: ADMIN_EMAIL,
             timestamp: new Date().toISOString()
         });
-        
+
     } catch (error) {
-        console.error('❌ Error sending admin notification:', error);
-        res.status(500).json({
-            success: false,
-            error: error.message
-        });
+        console.error('❌ Error:', error);
+        res.status(500).json({ success: false, error: error.message });
     }
 });
 
-// ============================================
-// ERROR HANDLING
-// ============================================
-
-// 404 Handler
-app.use((req, res) => {
-    res.status(404).json({
-        error: 'Endpoint not found',
-        path: req.path,
-        message: 'Please check the API documentation'
-    });
-});
-
-// Global Error Handler
-app.use((err, req, res, next) => {
-    console.error('❌ Server Error:', err);
-    res.status(500).json({
-        error: 'Internal Server Error',
-        message: err.message
-    });
-});
-
-// ============================================
+// =====================================================
 // START SERVER
-// ============================================
-
+// =====================================================
 app.listen(PORT, () => {
     console.log('\n' + '='.repeat(60));
     console.log('🎉 UAEU Media Studio Email Service Started!');
@@ -662,33 +605,29 @@ app.listen(PORT, () => {
     console.log(`📡 Server running on: http://localhost:${PORT}`);
     console.log(`📧 Email provider: Gmail SMTP`);
     console.log(`✉️  Sender: ${GMAIL_USER}`);
-    console.log(`👨‍💼 Admin: ${ADMIN_EMAIL}`);
     console.log(`🎨 Templates: 10 professional UAEU-branded emails`);
-    console.log(`🌐 CORS: Enabled (all origins)`);
-    console.log('='.repeat(60));
-    console.log('\n📋 Available Endpoints:');
-    console.log('   GET  /');
-    console.log('   GET  /api/health');
-    console.log('   POST /api/email/reservation-confirmation');
-    console.log('   POST /api/email/reservation-approved');
-    console.log('   POST /api/email/reservation-rejected');
-    console.log('   POST /api/email/borrow-confirmation');
-    console.log('   POST /api/email/borrow-approved');
-    console.log('   POST /api/email/borrow-rejected');
-    console.log('   POST /api/email/admin-notification');
     console.log('='.repeat(60) + '\n');
+    console.log('Available endpoints:');
+    console.log('  GET  /                                  - Health check');
+    console.log('  GET  /api/health                        - Service status');
+    console.log('  POST /api/send-email                    - Send generic email');
+    console.log('  POST /api/email/reservation-confirmation');
+    console.log('  POST /api/email/reservation-approved');
+    console.log('  POST /api/email/reservation-rejected');
+    console.log('  POST /api/email/equipment-confirmation');
+    console.log('  POST /api/email/equipment-reminder');
+    console.log('  POST /api/email/equipment-overdue');
+    console.log('  POST /api/email/admin-notification');
+    console.log('\n' + '='.repeat(60) + '\n');
 });
 
-// ============================================
-// GRACEFUL SHUTDOWN
-// ============================================
-
+// Handle graceful shutdown
 process.on('SIGTERM', () => {
-    console.log('⚠️  SIGTERM received, shutting down gracefully...');
+    console.log('👋 SIGTERM received, shutting down gracefully...');
     process.exit(0);
 });
 
 process.on('SIGINT', () => {
-    console.log('\n⚠️  SIGINT received, shutting down gracefully...');
+    console.log('\n👋 SIGINT received, shutting down gracefully...');
     process.exit(0);
 });
