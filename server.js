@@ -43,7 +43,7 @@ transporter.verify((error, success) => {
 
 // UAEU Branding Constants
 const UAEU_RED = '#C8102E';
-const LOGO_URL = 'https://www.uaeu.ac.ae/en/dvca/ctl/images/uaeu-logo.png';
+const LOGO_URL = 'https://page.gensparksite.com/v1/base64_upload/9e0d42123b3d2cf388ffa66a64c534b7';
 
 // HTML Email Template Generator
 function generateEmailTemplate(content, title, icon = '📧') {
@@ -208,15 +208,31 @@ app.post('/api/email/reservation-confirmation', async (req, res) => {
         const content = `
             <p><strong>Dear ${data.studentName},</strong></p>
             <p>Your studio reservation request has been received and is pending approval.</p>
+            
             <div class="info-box">
-                <p><strong>Student ID:</strong> ${data.studentID}</p>
+                <h3 style="color: ${UAEU_RED}; margin-top: 0;">📋 Student Information</h3>
+                <p><strong>Name:</strong> ${data.studentName}</p>
+                <p><strong>Student ID:</strong> ${data.studentId || data.studentID}</p>
+                <p><strong>Email:</strong> ${data.email}</p>
+                <p><strong>Phone:</strong> ${data.phone || 'N/A'}</p>
+                <p><strong>College:</strong> ${data.college || 'N/A'}</p>
+                <p><strong>Department:</strong> ${data.department || 'N/A'}</p>
+                
+                <h3 style="color: ${UAEU_RED}; margin-top: 20px;">🎬 Reservation Details</h3>
+                <p><strong>Studio Type:</strong> ${data.studioType || 'Media Studio'}</p>
                 <p><strong>Date:</strong> ${data.date}</p>
                 <p><strong>Time:</strong> ${data.fromTime} - ${data.toTime}</p>
-                <p><strong>Studio:</strong> ${data.studioType || 'Media Studio'}</p>
-                <p><strong>Project:</strong> ${data.projectName || 'N/A'}</p>
-                <p><strong>Status:</strong> <span style="color: #f59e0b;">⏳ Pending Approval</span></p>
+                <p><strong>Duration:</strong> ${data.duration || 'N/A'} hours</p>
+                
+                <h3 style="color: ${UAEU_RED}; margin-top: 20px;">📝 Project Information</h3>
+                <p><strong>Project Name:</strong> ${data.projectName || 'N/A'}</p>
+                <p><strong>Project Description:</strong> ${data.projectDescription || 'N/A'}</p>
+                <p><strong>Supervisor:</strong> ${data.supervisor || 'N/A'}</p>
+                
+                <p style="margin-top: 20px;"><strong>Status:</strong> <span style="color: #f59e0b;">⏳ Pending Approval</span></p>
             </div>
-            <p>You will receive an email notification once your request is reviewed.</p>
+            
+            <p>You will receive an email notification once your request is reviewed by our team.</p>
             <p style="margin-top: 20px;">Best regards,<br><strong>UAEU Media Studio Team</strong></p>
         `;
 
@@ -253,15 +269,34 @@ app.post('/api/email/reservation-approved', async (req, res) => {
 
         const content = `
             <p><strong>Dear ${data.studentName},</strong></p>
-            <p>Great news! Your studio reservation has been approved!</p>
+            <p>Great news! Your studio reservation has been <strong style="color: #28a745;">APPROVED</strong>!</p>
+            
             <div style="background: #d4edda; border-left: 4px solid #28a745; padding: 20px; margin: 20px 0;">
-                <p style="color: #333;"><strong>Student ID:</strong> ${data.studentID}</p>
+                <h3 style="color: ${UAEU_RED}; margin-top: 0;">📋 Student Information</h3>
+                <p style="color: #333;"><strong>Name:</strong> ${data.studentName}</p>
+                <p style="color: #333;"><strong>Student ID:</strong> ${data.studentId || data.studentID}</p>
+                <p style="color: #333;"><strong>Email:</strong> ${data.email}</p>
+                <p style="color: #333;"><strong>Phone:</strong> ${data.phone || 'N/A'}</p>
+                <p style="color: #333;"><strong>College:</strong> ${data.college || 'N/A'}</p>
+                <p style="color: #333;"><strong>Department:</strong> ${data.department || 'N/A'}</p>
+                
+                <h3 style="color: ${UAEU_RED}; margin-top: 20px;">🎬 Reservation Details</h3>
+                <p style="color: #333;"><strong>Studio Type:</strong> ${data.studioType || 'Media Studio'}</p>
                 <p style="color: #333;"><strong>Date:</strong> ${data.date}</p>
                 <p style="color: #333;"><strong>Time:</strong> ${data.fromTime} - ${data.toTime}</p>
-                <p style="color: #333;"><strong>Studio:</strong> ${data.studioType || 'Media Studio'}</p>
-                <p style="color: #333;"><strong>Status:</strong> <span style="color: #28a745; font-weight: 600;">✅ APPROVED</span></p>
+                <p style="color: #333;"><strong>Duration:</strong> ${data.duration || 'N/A'} hours</p>
+                
+                <h3 style="color: ${UAEU_RED}; margin-top: 20px;">📝 Project Information</h3>
+                <p style="color: #333;"><strong>Project Name:</strong> ${data.projectName || 'N/A'}</p>
+                <p style="color: #333;"><strong>Project Description:</strong> ${data.projectDescription || 'N/A'}</p>
+                <p style="color: #333;"><strong>Supervisor:</strong> ${data.supervisor || 'N/A'}</p>
+                
+                ${data.notes ? `<p style="color: #333; margin-top: 15px;"><strong>Admin Notes:</strong> ${data.notes}</p>` : ''}
+                
+                <p style="color: #333; margin-top: 20px;"><strong>Status:</strong> <span style="color: #28a745; font-weight: 600;">✅ APPROVED</span></p>
             </div>
-            <p>Please arrive on time. Contact us if you need to make any changes.</p>
+            
+            <p><strong>Important:</strong> Please arrive on time and bring your student ID. Contact us if you need to make any changes.</p>
             <p style="margin-top: 20px;">Best regards,<br><strong>UAEU Media Studio Team</strong></p>
         `;
 
@@ -299,14 +334,26 @@ app.post('/api/email/reservation-rejected', async (req, res) => {
         const content = `
             <p><strong>Dear ${data.studentName},</strong></p>
             <p>Unfortunately, we cannot approve your studio reservation at this time.</p>
+            
             <div style="background: #f8d7da; border-left: 4px solid #dc3545; padding: 20px; margin: 20px 0;">
-                <p style="color: #333;"><strong>Student ID:</strong> ${data.studentID}</p>
+                <h3 style="color: ${UAEU_RED}; margin-top: 0;">📋 Student Information</h3>
+                <p style="color: #333;"><strong>Name:</strong> ${data.studentName}</p>
+                <p style="color: #333;"><strong>Student ID:</strong> ${data.studentId || data.studentID}</p>
+                <p style="color: #333;"><strong>Email:</strong> ${data.email}</p>
+                <p style="color: #333;"><strong>Phone:</strong> ${data.phone || 'N/A'}</p>
+                
+                <h3 style="color: ${UAEU_RED}; margin-top: 20px;">🎬 Reservation Details</h3>
+                <p style="color: #333;"><strong>Studio Type:</strong> ${data.studioType || 'Media Studio'}</p>
                 <p style="color: #333;"><strong>Date:</strong> ${data.date}</p>
                 <p style="color: #333;"><strong>Time:</strong> ${data.fromTime} - ${data.toTime}</p>
-                ${data.rejectionReason ? `<p style="color: #333;"><strong>Reason:</strong> ${data.rejectionReason}</p>` : ''}
-                <p style="color: #333;"><strong>Status:</strong> <span style="color: #dc3545; font-weight: 600;">❌ NOT APPROVED</span></p>
+                <p style="color: #333;"><strong>Project Name:</strong> ${data.projectName || 'N/A'}</p>
+                
+                ${data.rejectionReason || data.notes ? `<h3 style="color: ${UAEU_RED}; margin-top: 20px;">📝 Rejection Reason</h3><p style="color: #721c24; background: #f5c6cb; padding: 10px; border-radius: 5px;"><strong>${data.rejectionReason || data.notes}</strong></p>` : ''}
+                
+                <p style="color: #333; margin-top: 20px;"><strong>Status:</strong> <span style="color: #dc3545; font-weight: 600;">❌ NOT APPROVED</span></p>
             </div>
-            <p>You can submit a new reservation request at any time. Please contact us if you have questions.</p>
+            
+            <p>You can submit a new reservation request at any time. Please contact us if you have any questions.</p>
             <p style="margin-top: 20px;">Best regards,<br><strong>UAEU Media Studio Team</strong></p>
         `;
 
@@ -341,17 +388,50 @@ app.post('/api/email/equipment-confirmation', async (req, res) => {
     try {
         const data = req.body;
 
+        // Build equipment list
+        let equipmentList = [];
+        if (data.camera && data.camera !== 'None') equipmentList.push(`📷 Camera: ${data.camera}`);
+        if (data.memoryCard && data.memoryCard !== 'None') equipmentList.push(`💾 Memory Card: ${data.memoryCard}`);
+        if (data.tripod && data.tripod !== 'None') equipmentList.push(`📐 Tripod: ${data.tripod}`);
+        if (data.lights && data.lights !== 'None') equipmentList.push(`💡 Lights: ${data.lights}`);
+        if (data.microphone && data.microphone !== 'None') equipmentList.push(`🎤 Microphone: ${data.microphone}`);
+        if (data.otherEquipment && data.otherEquipment !== 'None') equipmentList.push(`📦 Other: ${data.otherEquipment}`);
+        
+        const equipmentHtml = equipmentList.length > 0 
+            ? equipmentList.map(item => `<p style="margin: 5px 0;">• ${item}</p>`).join('')
+            : `<p><strong>Equipment:</strong> ${data.equipmentName || 'Various items'}</p>`;
+
         const content = `
             <p><strong>Dear ${data.studentName},</strong></p>
             <p>Your equipment borrowing request has been received and is pending approval.</p>
+            
             <div class="info-box">
-                <p><strong>Student ID:</strong> ${data.studentID}</p>
-                <p><strong>Equipment:</strong> ${data.equipmentName}</p>
+                <h3 style="color: ${UAEU_RED}; margin-top: 0;">📋 Student Information</h3>
+                <p><strong>Name:</strong> ${data.studentName}</p>
+                <p><strong>Student ID:</strong> ${data.studentId || data.studentID}</p>
+                <p><strong>Email:</strong> ${data.email}</p>
+                <p><strong>Phone:</strong> ${data.phone || 'N/A'}</p>
+                <p><strong>College:</strong> ${data.college || 'N/A'}</p>
+                <p><strong>Department:</strong> ${data.department || 'N/A'}</p>
+                
+                <h3 style="color: ${UAEU_RED}; margin-top: 20px;">📦 Equipment Requested</h3>
+                ${equipmentHtml}
+                
+                <h3 style="color: ${UAEU_RED}; margin-top: 20px;">📅 Borrowing Period</h3>
                 <p><strong>Borrow Date:</strong> ${data.borrowDate}</p>
                 <p><strong>Return Date:</strong> ${data.returnDate}</p>
-                <p><strong>Status:</strong> <span style="color: #f59e0b;">⏳ Pending Approval</span></p>
+                
+                <h3 style="color: ${UAEU_RED}; margin-top: 20px;">📝 Project Information</h3>
+                <p><strong>Class Type:</strong> ${data.classType || 'N/A'}</p>
+                <p><strong>DR Number:</strong> ${data.dr || 'N/A'}</p>
+                <p><strong>Project Name:</strong> ${data.projectName || 'N/A'}</p>
+                <p><strong>Project Description:</strong> ${data.projectDescription || 'N/A'}</p>
+                <p><strong>Supervisor:</strong> ${data.supervisor || 'N/A'}</p>
+                
+                <p style="margin-top: 20px;"><strong>Status:</strong> <span style="color: #f59e0b;">⏳ Pending Approval</span></p>
             </div>
-            <p>You will receive an email notification once your request is reviewed.</p>
+            
+            <p>You will receive an email notification once your request is reviewed by our team.</p>
             <p style="margin-top: 20px;">Best regards,<br><strong>UAEU Media Studio Team</strong></p>
         `;
 
@@ -487,6 +567,156 @@ app.post('/api/email/equipment-overdue', async (req, res) => {
 });
 
 // =====================================================
+// TEMPLATE 6B: Equipment Borrow Approved
+// =====================================================
+app.post('/api/email/borrow-approved', async (req, res) => {
+    try {
+        const data = req.body;
+        
+        // Build equipment list
+        let equipmentList = [];
+        if (data.camera && data.camera !== 'None') equipmentList.push(`📷 Camera: ${data.camera}`);
+        if (data.memoryCard && data.memoryCard !== 'None') equipmentList.push(`💾 Memory Card: ${data.memoryCard}`);
+        if (data.tripod && data.tripod !== 'None') equipmentList.push(`📐 Tripod: ${data.tripod}`);
+        if (data.lights && data.lights !== 'None') equipmentList.push(`💡 Lights: ${data.lights}`);
+        if (data.microphone && data.microphone !== 'None') equipmentList.push(`🎤 Microphone: ${data.microphone}`);
+        if (data.otherEquipment && data.otherEquipment !== 'None') equipmentList.push(`📦 Other: ${data.otherEquipment}`);
+        
+        const equipmentHtml = equipmentList.length > 0 
+            ? equipmentList.map(item => `<p style="margin: 5px 0;">• ${item}</p>`).join('')
+            : `<p><strong>Equipment:</strong> ${data.equipmentName || 'Various items'}</p>`;
+
+        const content = `
+            <p><strong>Dear ${data.studentName},</strong></p>
+            <p>Great news! Your equipment borrowing request has been <strong style="color: #28a745;">APPROVED</strong>!</p>
+            
+            <div style="background: #d4edda; border-left: 4px solid #28a745; padding: 20px; margin: 20px 0;">
+                <h3 style="color: ${UAEU_RED}; margin-top: 0;">📋 Student Information</h3>
+                <p style="color: #333;"><strong>Name:</strong> ${data.studentName}</p>
+                <p style="color: #333;"><strong>Student ID:</strong> ${data.studentId || data.studentID}</p>
+                <p style="color: #333;"><strong>Email:</strong> ${data.email}</p>
+                <p style="color: #333;"><strong>Phone:</strong> ${data.phone || 'N/A'}</p>
+                <p style="color: #333;"><strong>College:</strong> ${data.college || 'N/A'}</p>
+                <p style="color: #333;"><strong>Department:</strong> ${data.department || 'N/A'}</p>
+                
+                <h3 style="color: ${UAEU_RED}; margin-top: 20px;">📦 Approved Equipment</h3>
+                ${equipmentHtml}
+                
+                <h3 style="color: ${UAEU_RED}; margin-top: 20px;">📅 Borrowing Period</h3>
+                <p style="color: #333;"><strong>Pickup Date:</strong> ${data.borrowDate}</p>
+                <p style="color: #333;"><strong>Return Date:</strong> ${data.returnDate}</p>
+                
+                <h3 style="color: ${UAEU_RED}; margin-top: 20px;">📝 Project Information</h3>
+                <p style="color: #333;"><strong>Class Type:</strong> ${data.classType || 'N/A'}</p>
+                <p style="color: #333;"><strong>DR Number:</strong> ${data.dr || 'N/A'}</p>
+                <p style="color: #333;"><strong>Project Name:</strong> ${data.projectName || 'N/A'}</p>
+                <p style="color: #333;"><strong>Supervisor:</strong> ${data.supervisor || 'N/A'}</p>
+                
+                ${data.notes ? `<p style="color: #333; margin-top: 15px;"><strong>Admin Notes:</strong> ${data.notes}</p>` : ''}
+                
+                <p style="color: #333; margin-top: 20px;"><strong>Status:</strong> <span style="color: #28a745; font-weight: 600;">✅ APPROVED</span></p>
+            </div>
+            
+            <p><strong>Important:</strong> Please pick up the equipment on time and return it by the due date. Bring your student ID for verification.</p>
+            <p style="margin-top: 20px;">Best regards,<br><strong>UAEU Media Studio Team</strong></p>
+        `;
+
+        const html = generateEmailTemplate(content, 'Equipment Borrow Approved', '🎉');
+
+        const info = await transporter.sendMail({
+            from: `UAEU Media Studio <${GMAIL_USER}>`,
+            to: data.email,
+            subject: '🎉 Equipment Borrow Approved - UAEU Media Studio',
+            html: html
+        });
+
+        console.log(`✅ Borrow approval sent to ${data.email}`);
+
+        res.json({
+            success: true,
+            messageId: info.messageId,
+            to: data.email,
+            timestamp: new Date().toISOString()
+        });
+
+    } catch (error) {
+        console.error('❌ Error:', error);
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+// =====================================================
+// TEMPLATE 6C: Equipment Borrow Rejected
+// =====================================================
+app.post('/api/email/borrow-rejected', async (req, res) => {
+    try {
+        const data = req.body;
+        
+        // Build equipment list
+        let equipmentList = [];
+        if (data.camera && data.camera !== 'None') equipmentList.push(`📷 Camera: ${data.camera}`);
+        if (data.memoryCard && data.memoryCard !== 'None') equipmentList.push(`💾 Memory Card: ${data.memoryCard}`);
+        if (data.tripod && data.tripod !== 'None') equipmentList.push(`📐 Tripod: ${data.tripod}`);
+        if (data.lights && data.lights !== 'None') equipmentList.push(`💡 Lights: ${data.lights}`);
+        if (data.microphone && data.microphone !== 'None') equipmentList.push(`🎤 Microphone: ${data.microphone}`);
+        if (data.otherEquipment && data.otherEquipment !== 'None') equipmentList.push(`📦 Other: ${data.otherEquipment}`);
+        
+        const equipmentHtml = equipmentList.length > 0 
+            ? equipmentList.map(item => `<p style="margin: 5px 0;">• ${item}</p>`).join('')
+            : `<p><strong>Equipment:</strong> ${data.equipmentName || 'Various items'}</p>`;
+
+        const content = `
+            <p><strong>Dear ${data.studentName},</strong></p>
+            <p>Unfortunately, we cannot approve your equipment borrowing request at this time.</p>
+            
+            <div style="background: #f8d7da; border-left: 4px solid #dc3545; padding: 20px; margin: 20px 0;">
+                <h3 style="color: ${UAEU_RED}; margin-top: 0;">📋 Student Information</h3>
+                <p style="color: #333;"><strong>Name:</strong> ${data.studentName}</p>
+                <p style="color: #333;"><strong>Student ID:</strong> ${data.studentId || data.studentID}</p>
+                <p style="color: #333;"><strong>Email:</strong> ${data.email}</p>
+                <p style="color: #333;"><strong>Phone:</strong> ${data.phone || 'N/A'}</p>
+                
+                <h3 style="color: ${UAEU_RED}; margin-top: 20px;">📦 Requested Equipment</h3>
+                ${equipmentHtml}
+                
+                <h3 style="color: ${UAEU_RED}; margin-top: 20px;">📅 Requested Period</h3>
+                <p style="color: #333;"><strong>Borrow Date:</strong> ${data.borrowDate}</p>
+                <p style="color: #333;"><strong>Return Date:</strong> ${data.returnDate}</p>
+                
+                ${data.rejectionReason || data.notes ? `<h3 style="color: ${UAEU_RED}; margin-top: 20px;">📝 Rejection Reason</h3><p style="color: #721c24; background: #f5c6cb; padding: 10px; border-radius: 5px;"><strong>${data.rejectionReason || data.notes}</strong></p>` : ''}
+                
+                <p style="color: #333; margin-top: 20px;"><strong>Status:</strong> <span style="color: #dc3545; font-weight: 600;">❌ NOT APPROVED</span></p>
+            </div>
+            
+            <p>You can submit a new request at any time. Please contact us if you have any questions.</p>
+            <p style="margin-top: 20px;">Best regards,<br><strong>UAEU Media Studio Team</strong></p>
+        `;
+
+        const html = generateEmailTemplate(content, 'Equipment Borrow Not Approved', '❌');
+
+        const info = await transporter.sendMail({
+            from: `UAEU Media Studio <${GMAIL_USER}>`,
+            to: data.email,
+            subject: 'Equipment Borrow Request - UAEU Media Studio',
+            html: html
+        });
+
+        console.log(`✅ Borrow rejection sent to ${data.email}`);
+
+        res.json({
+            success: true,
+            messageId: info.messageId,
+            to: data.email,
+            timestamp: new Date().toISOString()
+        });
+
+    } catch (error) {
+        console.error('❌ Error:', error);
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+// =====================================================
 // TEMPLATE 7: Reservation Reminder
 // =====================================================
 app.post('/api/email/reservation-reminder', async (req, res) => {
@@ -538,36 +768,71 @@ app.post('/api/email/reservation-reminder', async (req, res) => {
 app.post('/api/email/admin-notification', async (req, res) => {
     try {
         const data = req.body;
-        const isEquipment = data.equipmentName ? true : false;
+        
+        // Detect if it's equipment borrow (has camera/tripod fields) or reservation (has studioType)
+        const isEquipment = data.camera || data.tripod || data.microphone || data.lights || data.borrowDate;
         const type = isEquipment ? 'Equipment Borrowing' : 'Studio Reservation';
 
         let detailsHtml = '';
         if (isEquipment) {
+            // Build equipment list
+            let equipmentList = [];
+            if (data.camera && data.camera !== 'None') equipmentList.push(`📷 Camera: ${data.camera}`);
+            if (data.memoryCard && data.memoryCard !== 'None') equipmentList.push(`💾 Memory Card: ${data.memoryCard}`);
+            if (data.tripod && data.tripod !== 'None') equipmentList.push(`📐 Tripod: ${data.tripod}`);
+            if (data.lights && data.lights !== 'None') equipmentList.push(`💡 Lights: ${data.lights}`);
+            if (data.microphone && data.microphone !== 'None') equipmentList.push(`🎤 Microphone: ${data.microphone}`);
+            if (data.otherEquipment && data.otherEquipment !== 'None') equipmentList.push(`📦 Other: ${data.otherEquipment}`);
+            
+            const equipmentHtml = equipmentList.length > 0 
+                ? equipmentList.map(item => `<p style="margin: 5px 0;">• ${item}</p>`).join('')
+                : `<p><strong>Equipment:</strong> ${data.equipmentName || 'Various items'}</p>`;
+            
             detailsHtml = `
-                <p style="color: #333;"><strong>Equipment:</strong> ${data.equipmentName}</p>
+                <h3 style="color: ${UAEU_RED}; margin-top: 20px;">📦 Equipment Requested</h3>
+                ${equipmentHtml}
+                
+                <h3 style="color: ${UAEU_RED}; margin-top: 20px;">📅 Borrowing Period</h3>
                 <p style="color: #333;"><strong>Borrow Date:</strong> ${data.borrowDate}</p>
                 <p style="color: #333;"><strong>Return Date:</strong> ${data.returnDate}</p>
+                
+                <h3 style="color: ${UAEU_RED}; margin-top: 20px;">📝 Project Information</h3>
+                <p style="color: #333;"><strong>Class Type:</strong> ${data.classType || 'N/A'}</p>
+                <p style="color: #333;"><strong>DR Number:</strong> ${data.dr || 'N/A'}</p>
+                <p style="color: #333;"><strong>Project Name:</strong> ${data.projectName || 'N/A'}</p>
+                <p style="color: #333;"><strong>Project Description:</strong> ${data.projectDescription || 'N/A'}</p>
+                <p style="color: #333;"><strong>Supervisor:</strong> ${data.supervisor || 'N/A'}</p>
             `;
         } else {
             detailsHtml = `
+                <h3 style="color: ${UAEU_RED}; margin-top: 20px;">🎬 Reservation Details</h3>
+                <p style="color: #333;"><strong>Studio Type:</strong> ${data.studioType || 'Media Studio'}</p>
                 <p style="color: #333;"><strong>Date:</strong> ${data.date}</p>
                 <p style="color: #333;"><strong>Time:</strong> ${data.fromTime} - ${data.toTime}</p>
-                <p style="color: #333;"><strong>Studio:</strong> ${data.studioType || 'Media Studio'}</p>
-                <p style="color: #333;"><strong>Project:</strong> ${data.projectName || 'N/A'}</p>
+                <p style="color: #333;"><strong>Duration:</strong> ${data.duration || 'N/A'} hours</p>
+                
+                <h3 style="color: ${UAEU_RED}; margin-top: 20px;">📝 Project Information</h3>
+                <p style="color: #333;"><strong>Project Name:</strong> ${data.projectName || 'N/A'}</p>
+                <p style="color: #333;"><strong>Project Description:</strong> ${data.projectDescription || 'N/A'}</p>
+                <p style="color: #333;"><strong>Supervisor:</strong> ${data.supervisor || 'N/A'}</p>
             `;
         }
 
         const content = `
             <p><strong>New ${type} Request Received</strong></p>
             <div class="info-box">
-                <p style="color: #333;"><strong>Student:</strong> ${data.studentName}</p>
-                <p style="color: #333;"><strong>Student ID:</strong> ${data.studentID}</p>
+                <h3 style="color: ${UAEU_RED}; margin-top: 0;">📋 Student Information</h3>
+                <p style="color: #333;"><strong>Name:</strong> ${data.studentName}</p>
+                <p style="color: #333;"><strong>Student ID:</strong> ${data.studentId || data.studentID}</p>
                 <p style="color: #333;"><strong>Email:</strong> ${data.email}</p>
                 <p style="color: #333;"><strong>Phone:</strong> ${data.phone || 'N/A'}</p>
+                <p style="color: #333;"><strong>College:</strong> ${data.college || 'N/A'}</p>
+                <p style="color: #333;"><strong>Department:</strong> ${data.department || 'N/A'}</p>
                 ${detailsHtml}
             </div>
             <div style="background: #fffbeb; padding: 15px; border-left: 4px solid #f59e0b; margin: 20px 0;">
                 <p style="color: #333;">⚠️ <strong>Action Required:</strong> Please review and approve/reject this request in the admin dashboard.</p>
+                <p style="color: #333; margin-top: 10px;"><strong>📍 Admin Dashboard:</strong> <a href="https://zulrunnh.gensparkspace.com/admin.html" style="color: ${UAEU_RED};">Click here to manage requests</a></p>
             </div>
         `;
 
